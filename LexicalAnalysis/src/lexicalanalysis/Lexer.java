@@ -31,6 +31,10 @@ public class Lexer {
             
             while(currentChar != (char)-1) {
                 
+                while(Character.isWhitespace(currentChar)) {
+                    nextChar();
+                }
+                
                 if(Character.isLetter(currentChar)) {
                     currentLexeme += currentChar;
                     nextChar();

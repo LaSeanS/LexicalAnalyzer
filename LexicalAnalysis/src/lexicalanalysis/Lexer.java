@@ -10,9 +10,11 @@ import java.util.HashMap;
 
 public class Lexer {
     
-    static HashMap<String, String> reservedSymbols;
-    static private int currentChar;
+    static private HashMap<String, String> reservedSymbols;
+    static private char currentChar;
+    static private String currentLexeme = "";
     static private BufferedReader buffer;
+    static private FileReader reader;
     
     public Lexer() {
         reservedSymbols = new HashMap<>();
@@ -22,12 +24,84 @@ public class Lexer {
     public static void Tokenize(String fileName) {
         
         try {
-            FileReader reader = new FileReader(fileName);
+            reader = new FileReader(fileName);
             buffer = new BufferedReader(reader);
             
-            while (nextChar() != -1) {
-                System.out.println((char)currentChar);
+            nextChar();
+            
+            while(currentChar != (char)-1) {
+                
+                while(Character.isWhitespace(currentChar)) {
+                    nextChar();
+                }
+                
+                if(Character.isLetter(currentChar)) {
+                    currentLexeme += currentChar;
+                    nextChar();
+                    
+                    while(Character.isLetterOrDigit(currentChar)) {
+                        currentLexeme += currentChar;
+                        nextChar();
+                    }
+                    
+                    if(findSymbol(currentLexeme)) {
+                        currentLexeme = "";
+                    }
+                    else {
+                        System.out.println("IDENT:" + currentLexeme);
+                        currentLexeme = "";
+                    }
+                    
+                }
+                
+                else if(Character.isLetterOrDigit(currentChar)) {
+                    currentLexeme += currentChar;
+                    nextChar();
+                    
+                    while(Character.isDigit(currentChar)) {
+                        currentLexeme += currentChar;
+                        nextChar();
+                    }
+                    if(Character.isLetter(currentChar)) {
+                        System.out.println("SYNTAX ERROR: INVALID IDENTIFIER NAME");
+                        return;
+                    }
+                    
+                    System.out.println("INT_LIT:" + currentLexeme);
+                    currentLexeme = "";
+                    
+                }
+                
+                else {
+                    currentLexeme += currentChar;
+                    nextChar();
+                    boolean newSymbol = false;
+                    
+                    while(!Character.isLetterOrDigit(currentChar) && !Character.isWhitespace(currentChar) && !newSymbol) {
+                        
+                        if(isSpecialSymbol(currentChar)) {
+                            newSymbol = true;
+                        }
+                        else {
+                            currentLexeme += currentChar; 
+                            nextChar();
+                        }
+                                            
+                    }
+                    
+                    if(findSymbol(currentLexeme)) {
+                        currentLexeme = "";
+                    }
+                    else {
+                        System.out.println("SYNTAX ERROR: INVALID SYMBOL");
+                        return;
+                    }
+                    
+                }
+                
             }
+            
+            System.out.println("EOF");
             
             try {
                 reader.close();
@@ -49,7 +123,6 @@ public class Lexer {
             return true;
         }
         else {
-            System.out.println("SYNTAX ERROR: INVALID IDENTIFIER NAME");
             return false;
         }
         
@@ -57,12 +130,18 @@ public class Lexer {
     
     static int nextChar() {
         try {
-            currentChar = buffer.read();
+            currentChar = (char)buffer.read();
         } catch (IOException e) {
             e.printStackTrace();
         }
         
         return currentChar;
+    }
+    
+    static boolean isSpecialSymbol(char symbol){
+        
+        return Character.toString(symbol).equals("(") || Character.toString(symbol).equals(")") || Character.toString(symbol).equals("{") || Character.toString(symbol).equals("}") || Character.toString(symbol).equals(";");
+        
     }
     
     static void initializeSymbols() {

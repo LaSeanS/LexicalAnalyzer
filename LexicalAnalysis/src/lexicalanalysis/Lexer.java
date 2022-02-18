@@ -12,7 +12,7 @@ public class Lexer {
     
     static private HashMap<String, String> reservedSymbols;
     static private char currentChar;
-    static private String currentLexeme;
+    static private String currentLexeme = "";
     static private BufferedReader buffer;
     static private FileReader reader;
     

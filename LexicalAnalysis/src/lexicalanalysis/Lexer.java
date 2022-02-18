@@ -43,6 +43,7 @@ public class Lexer {
                         currentLexeme += currentChar;
                         nextChar();
                     }
+                    
                     if(findSymbol(currentLexeme)) {
                         currentLexeme = "";
                     }
@@ -74,9 +75,18 @@ public class Lexer {
                 else {
                     currentLexeme += currentChar;
                     nextChar();
+                    boolean newSymbol = false;
                     
-                    while(!Character.isLetterOrDigit(currentChar) && !Character.isWhitespace(currentChar)) {
-                        currentLexeme += nextChar();
+                    while(!Character.isLetterOrDigit(currentChar) && !Character.isWhitespace(currentChar) && !newSymbol) {
+                        
+                        if(isSpecialSymbol(currentChar)) {
+                            newSymbol = true;
+                        }
+                        else {
+                            currentLexeme += currentChar; 
+                            nextChar();
+                        }
+                                            
                     }
                     
                     if(findSymbol(currentLexeme)) {
@@ -126,6 +136,12 @@ public class Lexer {
         }
         
         return currentChar;
+    }
+    
+    static boolean isSpecialSymbol(char symbol){
+        
+        return Character.toString(symbol).equals("(") || Character.toString(symbol).equals(")") || Character.toString(symbol).equals("{") || Character.toString(symbol).equals("}") || Character.toString(symbol).equals(";");
+        
     }
     
     static void initializeSymbols() {

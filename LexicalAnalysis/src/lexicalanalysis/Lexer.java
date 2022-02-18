@@ -10,11 +10,9 @@ import java.util.HashMap;
 
 public class Lexer {
     
-    static private HashMap<String, String> reservedSymbols;
-    static private char currentChar;
-    static private String currentLexeme = "";
+    static HashMap<String, String> reservedSymbols;
+    static private int currentChar;
     static private BufferedReader buffer;
-    static private FileReader reader;
     
     public Lexer() {
         reservedSymbols = new HashMap<>();
@@ -24,74 +22,12 @@ public class Lexer {
     public static void Tokenize(String fileName) {
         
         try {
-            reader = new FileReader(fileName);
+            FileReader reader = new FileReader(fileName);
             buffer = new BufferedReader(reader);
             
-            nextChar();
-            
-            while(currentChar != (char)-1) {
-                
-                while(Character.isWhitespace(currentChar)) {
-                    nextChar();
-                }
-                
-                if(Character.isLetter(currentChar)) {
-                    currentLexeme += currentChar;
-                    nextChar();
-                    
-                    while(Character.isLetterOrDigit(currentChar)) {
-                        currentLexeme += currentChar;
-                        nextChar();
-                    }
-                    if(findSymbol(currentLexeme)) {
-                        currentLexeme = "";
-                    }
-                    else {
-                        System.out.println("IDENT:" + currentLexeme);
-                        currentLexeme = "";
-                    }
-                    
-                }
-                
-                else if(Character.isLetterOrDigit(currentChar)) {
-                    currentLexeme += currentChar;
-                    nextChar();
-                    
-                    while(Character.isDigit(currentChar)) {
-                        currentLexeme += currentChar;
-                        nextChar();
-                    }
-                    if(Character.isLetter(currentChar)) {
-                        System.out.println("SYNTAX ERROR: INVALID IDENTIFIER NAME");
-                        return;
-                    }
-                    
-                    System.out.println("INT_LIT:" + currentLexeme);
-                    currentLexeme = "";
-                    
-                }
-                
-                else {
-                    currentLexeme += currentChar;
-                    nextChar();
-                    
-                    while(!Character.isLetterOrDigit(currentChar) && !Character.isWhitespace(currentChar)) {
-                        currentLexeme += nextChar();
-                    }
-                    
-                    if(findSymbol(currentLexeme)) {
-                        currentLexeme = "";
-                    }
-                    else {
-                        System.out.println("SYNTAX ERROR: INVALID SYMBOL");
-                        return;
-                    }
-                    
-                }
-                
+            while (nextChar() != -1) {
+                System.out.println((char)currentChar);
             }
-            
-            System.out.println("EOF");
             
             try {
                 reader.close();
@@ -113,6 +49,7 @@ public class Lexer {
             return true;
         }
         else {
+            System.out.println("SYNTAX ERROR: INVALID IDENTIFIER NAME");
             return false;
         }
         
@@ -120,7 +57,7 @@ public class Lexer {
     
     static int nextChar() {
         try {
-            currentChar = (char)buffer.read();
+            currentChar = buffer.read();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -11,6 +11,8 @@ import java.util.HashMap;
 public class Lexer {
     
     static HashMap<String, String> reservedSymbols;
+    static private int currentChar;
+    static private BufferedReader buffer;
     
     public Lexer() {
         reservedSymbols = new HashMap<>();
@@ -21,34 +23,20 @@ public class Lexer {
         
         try {
             FileReader reader = new FileReader(fileName);
-            BufferedReader buffer = new BufferedReader(reader);
+            buffer = new BufferedReader(reader);
             
-            try{
-                
-                int currentChar;
-                
-                while((currentChar = buffer.read()) != -1) {
-                    System.out.println((char)currentChar);
-                }
-                
-            }
-            //catch error if file cannot be read
-            catch(IOException e) {
-                e.printStackTrace();
+            while (nextChar() != -1) {
+                System.out.println((char)currentChar);
             }
             
             try {
                 reader.close();
                 buffer.close();
-            }
-            //catch error if file cannot be closed
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             
-        }
-        //catch error if file cannot be opened
-        catch(IOException e){
+        } catch(IOException e){
             e.printStackTrace();
         }
 
@@ -65,6 +53,16 @@ public class Lexer {
             return false;
         }
         
+    }
+    
+    static int nextChar() {
+        try {
+            currentChar = buffer.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return currentChar;
     }
     
     static void initializeSymbols() {
@@ -101,7 +99,6 @@ public class Lexer {
         reservedSymbols.put(",", "COMMA");
         reservedSymbols.put(";", "SEMI");
         
-        return;
     }
 
     

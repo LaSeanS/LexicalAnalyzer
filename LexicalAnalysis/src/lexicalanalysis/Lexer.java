@@ -4,7 +4,6 @@
 package lexicalanalysis;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,8 +20,7 @@ public class Lexer {
     public static void Tokenize(String fileName) {
         
         try {
-            File newProgram = new File(fileName);
-            FileReader reader = new FileReader(newProgram);
+            FileReader reader = new FileReader(fileName);
             BufferedReader buffer = new BufferedReader(reader);
             
             try{

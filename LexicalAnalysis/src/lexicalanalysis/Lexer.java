@@ -61,7 +61,7 @@ public class Lexer {
             return true;
         }
         else {
-            System.out.println("Invalid symbol detected. Aborting process.");
+            System.out.println("SYNTAX ERROR: INVALID IDENTIFIER NAME");
             return false;
         }
         

@@ -54,7 +54,7 @@ public class Lexer {
                     
                 }
                 
-                else if(Character.isLetterOrDigit(currentChar)) {
+                else if(Character.isDigit(currentChar)) {
                     currentLexeme += currentChar;
                     nextChar();
                     
@@ -81,7 +81,7 @@ public class Lexer {
                         
                         if(isSpecialSymbol(currentChar)) {
                             newSymbol = true;
-                        }
+                        } 
                         else {
                             currentLexeme += currentChar; 
                             nextChar();
